@@ -24,4 +24,11 @@
   <extensions defaultExtensionNs="com.intellij">
 
   </extensions>
+  <actions>
+    <action id="com.aicc.aicodecompletionideaplugin.AICCStatsPopupDialogAction"
+            class="com.aicc.aicodecompletionideaplugin.AICCStatsPopupDialogAction" text="AI Code Completion Stats"
+            description="AI code completion stats">
+      <add-to-group group-id="ToolsMenu" anchor="first"/>
+    </action>
+  </actions>
 </idea-plugin>
