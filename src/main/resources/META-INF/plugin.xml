@@ -22,7 +22,7 @@
   <!-- Extension points defined by the plugin.
        Read more: https://plugins.jetbrains.com/docs/intellij/plugin-extension-points.html -->
   <extensions defaultExtensionNs="com.intellij">
-
+    <inline.completion.provider implementation="com.aicc.aicodecompletionideaplugin.AICCInlineCompletionProvider"/>
   </extensions>
   <actions>
     <action id="com.aicc.aicodecompletionideaplugin.AICCStatsPopupDialogAction"
