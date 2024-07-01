@@ -13,6 +13,6 @@ class AICCInlineCompletionProvider : InlineCompletionProvider {
     }
 
     override fun isEnabled(event: InlineCompletionEvent): Boolean {
-        return true
+        return event is InlineCompletionEvent.DocumentChange || event is InlineCompletionEvent.DirectCall
     }
 }
