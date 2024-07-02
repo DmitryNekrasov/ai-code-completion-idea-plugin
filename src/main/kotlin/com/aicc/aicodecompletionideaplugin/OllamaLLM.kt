@@ -15,6 +15,11 @@ object OllamaLLM : LLM {
         }
 
     override fun call(prefix: String, suffix: String): String? {
-        TODO("Not yet implemented")
+        if (isEnable) {
+            AICCStatusBarWidgetManager.updateStatus("Ollama server is reachable")
+        } else {
+            AICCStatusBarWidgetManager.updateStatus("Ollama server is not reachable")
+        }
+        return ""
     }
 }

@@ -1,54 +1,56 @@
 package com.aicc.aicodecompletionideaplugin
 
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.project.ProjectManager
 import com.intellij.openapi.wm.StatusBarWidget
 import com.intellij.openapi.wm.StatusBarWidgetFactory
+import com.intellij.openapi.wm.WindowManager
 import com.intellij.openapi.wm.impl.status.EditorBasedWidget
 import java.awt.Component
 
 class AICCStatusBarWidgetFactory : StatusBarWidgetFactory {
-    override fun getId() = "AICCStatusBarWidget"
+    override fun getId() = ID
 
-    override fun getDisplayName() = "AICCStatusBarWidget"
+    override fun getDisplayName() = ID
 
-    override fun createWidget(project: Project): StatusBarWidget {
-        return AICCStatusBarWidget(project)
-    }
+    override fun createWidget(project: Project) = AICCStatusBarWidget(project)
 
-    override fun disposeWidget(widget: StatusBarWidget) {
-        // Dispose resources if needed
-    }
+    override fun isAvailable(project: Project) = true
 
-    override fun isAvailable(project: Project): Boolean {
-        // Return true if the widget is available for the project
-        return true
-    }
+    override fun canBeEnabledOn(statusBar: com.intellij.openapi.wm.StatusBar) = true
 
-    override fun canBeEnabledOn(statusBar: com.intellij.openapi.wm.StatusBar): Boolean {
-        // Return true if the widget can be enabled on the status bar
-        return true
+    companion object {
+        const val ID = "AICCStatusBarWidgetFactory"
     }
 }
 
 class AICCStatusBarWidget(project: Project) : EditorBasedWidget(project), StatusBarWidget.TextPresentation {
+    override fun ID() = ID
 
-    override fun ID(): String {
-        return "AICCStatusBarWidget"
-    }
+    override fun getPresentation() = this
 
-    override fun getPresentation(): StatusBarWidget.WidgetPresentation {
-        return this
-    }
+    override fun getAlignment() = Component.LEFT_ALIGNMENT
 
-    override fun getAlignment(): Float {
-        return Component.LEFT_ALIGNMENT
-    }
+    var status: String = "waiting..."
 
-    override fun getText() = "AICC Status Bar Widget TEXT"
+    override fun getText() = "AICC Status: $status"
 
-    override fun getTooltipText(): String {
-        return "AICC Status Bar Widget"
+    override fun getTooltipText() = ID
+
+    companion object {
+        const val ID = "AICCStatusBarWidget"
     }
 }
 
-
+object AICCStatusBarWidgetManager {
+    fun updateStatus(status: String) {
+        WindowManager.getInstance().getStatusBar(ProjectManager.getInstance().openProjects.first())?.also { statusBar ->
+            statusBar.getWidget(AICCStatusBarWidget.ID)?.apply {
+                if (this is AICCStatusBarWidget) {
+                    this.status = status
+                    statusBar.updateWidget(AICCStatusBarWidget.ID)
+                }
+            }
+        }
+    }
+}
