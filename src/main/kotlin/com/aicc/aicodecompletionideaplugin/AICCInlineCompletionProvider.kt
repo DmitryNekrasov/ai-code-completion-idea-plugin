@@ -11,12 +11,7 @@ class AICCInlineCompletionProvider : InlineCompletionProvider {
         val code = request.document.text
         val prefix = code.substring(0, offset + 1)
         val suffix = code.substring(offset + 1)
-
-        var suggestion = ""
-        OllamaLLM.call(prefix, suffix)?.also { response ->
-            suggestion = response
-        }
-
+        val suggestion = OllamaLLM.call(prefix, suffix) ?: ""
         return InlineCompletionSuggestion.withFlow {
             emit(InlineCompletionGrayTextElement(suggestion))
         }
