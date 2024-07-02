@@ -8,19 +8,13 @@ class AICCInlineCompletionProvider : InlineCompletionProvider {
 
     override suspend fun getSuggestion(request: InlineCompletionRequest): InlineCompletionSuggestion {
         val offset = request.startOffset
-        val text = request.document.text.substring(0..offset)
-        val lastLine = text.lines().last()
+        val code = request.document.text
+        val prefix = code.substring(0, offset + 1)
+        val suffix = code.substring(offset + 1)
 
         var suggestion = ""
-        for (i in 0..EXAMPLE_STRING.lastIndex) {
-            val prefix = EXAMPLE_STRING.substring(0..i)
-            if (lastLine.endsWith(prefix)) {
-                val suffix = EXAMPLE_STRING.substring(i + 1)
-                println("prefix = $prefix")
-                println("suffix = $suffix")
-                suggestion = suffix
-                break
-            }
+        OllamaLLM.call(prefix, suffix)?.also { response ->
+            suggestion = response
         }
 
         return InlineCompletionSuggestion.withFlow {
@@ -30,9 +24,5 @@ class AICCInlineCompletionProvider : InlineCompletionProvider {
 
     override fun isEnabled(event: InlineCompletionEvent): Boolean {
         return event is InlineCompletionEvent.DocumentChange || event is InlineCompletionEvent.DirectCall
-    }
-
-    companion object {
-        const val EXAMPLE_STRING = "System.out.println(sum);"
     }
 }
