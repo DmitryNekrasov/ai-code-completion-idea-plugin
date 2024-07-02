@@ -11,6 +11,11 @@ repositories {
   mavenCentral()
 }
 
+dependencies {
+  implementation("io.github.amithkoujalgi:ollama4j:1.0.70")
+  implementation("org.slf4j:slf4j-jdk14:2.1.0-alpha1")
+}
+
 // Configure Gradle IntelliJ Plugin
 // Read more: https://plugins.jetbrains.com/docs/intellij/tools-gradle-intellij-plugin.html
 intellij {
