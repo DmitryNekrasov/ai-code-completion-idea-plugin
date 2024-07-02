@@ -34,7 +34,18 @@ object OllamaLLM : LLM {
             }
         }
 
+    /**
+     * The host URL for the Ollama API.
+     */
     private const val HOST = "http://localhost:11434/"
+
+    /**
+     * The model used for code generation in the Ollama API.
+     */
     private const val MODEL = "codellama:7b-code"
+
+    /**
+     * The end of text marker used in the responses from the Ollama API.
+     */
     private const val END = "<EOT>"
 }
