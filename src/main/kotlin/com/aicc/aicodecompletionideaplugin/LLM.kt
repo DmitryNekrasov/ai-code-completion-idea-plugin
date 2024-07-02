@@ -1,3 +1,5 @@
+package com.aicc.aicodecompletionideaplugin
+
 /**
  * This is an interface for a Large Language Model (LLM).
  * It provides a method to generate a completion suggestion based on a given prefix and suffix.

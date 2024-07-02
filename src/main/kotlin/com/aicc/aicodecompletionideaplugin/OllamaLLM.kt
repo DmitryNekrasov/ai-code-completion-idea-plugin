@@ -1,6 +1,5 @@
 package com.aicc.aicodecompletionideaplugin
 
-import LLM
 import io.github.amithkoujalgi.ollama4j.core.OllamaAPI
 
 object OllamaLLM : LLM {
