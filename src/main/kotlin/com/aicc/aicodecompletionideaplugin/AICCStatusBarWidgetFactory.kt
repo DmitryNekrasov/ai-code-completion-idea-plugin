@@ -100,7 +100,16 @@ class AICCStatusBarWidget(project: Project) : EditorBasedWidget(project), Status
     }
 }
 
+/**
+ * This object manages the AICCStatusBarWidget.
+ * It provides a method to update the status displayed on the AICCStatusBarWidget.
+ */
 object AICCStatusBarWidgetManager {
+    /**
+     * This method updates the status displayed on the AICCStatusBarWidget.
+     *
+     * @param status The new status to be displayed on the AICCStatusBarWidget.
+     */
     fun updateStatus(status: String) {
         WindowManager.getInstance().getStatusBar(ProjectManager.getInstance().openProjects.first())?.also { statusBar ->
             statusBar.getWidget(AICCStatusBarWidget.ID)?.apply {
