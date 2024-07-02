@@ -48,20 +48,54 @@ class AICCStatusBarWidgetFactory : StatusBarWidgetFactory {
     }
 }
 
+/**
+ * This class represents a status bar widget for the AICC plugin.
+ * It extends the EditorBasedWidget and implements the StatusBarWidget.TextPresentation interface.
+ *
+ * @property project The project in which this widget is used.
+ * @property status The current status of the AICC plugin, displayed on the widget.
+ */
 class AICCStatusBarWidget(project: Project) : EditorBasedWidget(project), StatusBarWidget.TextPresentation {
+    /**
+     * This method returns the ID of the widget.
+     * @return The ID of the widget.
+     */
     override fun ID() = ID
 
+    /**
+     * This method returns the presentation of the widget.
+     * @return The presentation of the widget.
+     */
     override fun getPresentation() = this
 
+    /**
+     * This method returns the alignment of the widget.
+     * @return The alignment of the widget.
+     */
     override fun getAlignment() = Component.LEFT_ALIGNMENT
 
+    /**
+     * This property represents the current status of the AICC plugin (depends on Ollama server status).
+     * It is displayed on the widget.
+     */
     var status: String = "waiting..."
 
+    /**
+     * This method returns the text to be displayed on the widget.
+     * @return The text to be displayed on the widget.
+     */
     override fun getText() = "AICC Status: $status"
 
+    /**
+     * This method returns the tooltip text of the widget.
+     * @return The tooltip text of the widget.
+     */
     override fun getTooltipText() = ID
 
     companion object {
+        /**
+         * This constant represents the ID of the widget.
+         */
         const val ID = "AICCStatusBarWidget"
     }
 }
