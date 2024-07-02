@@ -1,12 +1,21 @@
 package com.aicc.aicodecompletionideaplugin
 
 import io.github.amithkoujalgi.ollama4j.core.OllamaAPI
-import io.github.amithkoujalgi.ollama4j.core.types.OllamaModelType
 import io.github.amithkoujalgi.ollama4j.core.utils.Options
 import io.github.amithkoujalgi.ollama4j.core.utils.OptionsBuilder
 
 object OllamaLLM : LLM {
-    private val api: OllamaAPI by lazy { OllamaAPI("http://localhost:11434/") }
+    override fun call(prefix: String, suffix: String): String? {
+        return if (isEnable) {
+            AICCStatusBarWidgetManager.updateStatus("OK")
+            api.generate(MODEL, "<PRE> $prefix <SUF>$suffix <MID>", options).response
+        } else {
+            AICCStatusBarWidgetManager.updateStatus("Ollama server is not reachable")
+            null
+        }
+    }
+
+    private val api: OllamaAPI by lazy { OllamaAPI(HOST) }
 
     private val options: Options by lazy {
         OptionsBuilder()
@@ -23,13 +32,6 @@ object OllamaLLM : LLM {
             }
         }
 
-    override fun call(prefix: String, suffix: String): String? {
-        return if (isEnable) {
-            AICCStatusBarWidgetManager.updateStatus("OK")
-            api.generate("codellama:7b-code", "<PRE> $prefix <SUF>$suffix <MID>", options).response
-        } else {
-            AICCStatusBarWidgetManager.updateStatus("Ollama server is not reachable")
-            null
-        }
-    }
+    private const val HOST = "http://localhost:11434/"
+    private const val MODEL = "codellama:7b-code"
 }
