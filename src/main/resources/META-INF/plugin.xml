@@ -23,6 +23,7 @@
        Read more: https://plugins.jetbrains.com/docs/intellij/plugin-extension-points.html -->
   <extensions defaultExtensionNs="com.intellij">
     <inline.completion.provider implementation="com.aicc.aicodecompletionideaplugin.AICCInlineCompletionProvider"/>
+    <statusBarWidgetFactory implementation="com.aicc.aicodecompletionideaplugin.AICCStatusBarWidgetFactory" id="AICCStatusBarWidget"/>
   </extensions>
   <actions>
     <action id="com.aicc.aicodecompletionideaplugin.AICCStatsPopupDialogAction"
