@@ -8,7 +8,9 @@ object OllamaLLM : LLM {
     override fun call(prefix: String, suffix: String): String? {
         return if (isEnable) {
             AICCStatusBarWidgetManager.updateStatus("OK")
-            api.generate(MODEL, "<PRE> $prefix <SUF>$suffix <MID>", options).response
+            api.generate(MODEL, "<PRE> $prefix <SUF>$suffix <MID>", options).response.let {
+                if (it.endsWith(END)) it.substring(0, it.length - END.length).trimEnd() else it
+            }
         } else {
             AICCStatusBarWidgetManager.updateStatus("Ollama server is not reachable")
             null
@@ -34,4 +36,5 @@ object OllamaLLM : LLM {
 
     private const val HOST = "http://localhost:11434/"
     private const val MODEL = "codellama:7b-code"
+    private const val END = "<EOT>"
 }
