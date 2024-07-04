@@ -40,6 +40,18 @@ class AICCStatistic {
         _successfulCompletionsNumber.incrementAndGet()
     }
 
+    /**
+     * This method is used to reset all the statistics.
+     * It sets the total number of completions, the number of successful completions,
+     * and the total completion time to zero.
+     */
+    fun reset() {
+        _totalCompletionsNumber.set(0)
+        _successfulCompletionsNumber.set(0)
+        _totalCompletionTimeInMillis.set(0)
+    }
+
+    // Private fields used for calculations
     private val _totalCompletionsNumber = AtomicInteger(0)
     private val _successfulCompletionsNumber = AtomicInteger(0)
     private val _totalCompletionTimeInMillis = AtomicLong(0)
