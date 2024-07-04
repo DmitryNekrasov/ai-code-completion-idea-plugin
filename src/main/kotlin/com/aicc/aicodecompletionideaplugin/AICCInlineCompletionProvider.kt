@@ -1,6 +1,7 @@
 package com.aicc.aicodecompletionideaplugin
 
 import com.intellij.codeInsight.inline.completion.*
+import com.intellij.codeInsight.inline.completion.elements.InlineCompletionElement
 import com.intellij.codeInsight.inline.completion.elements.InlineCompletionGrayTextElement
 
 class AICCInlineCompletionProvider : InlineCompletionProvider {
@@ -16,6 +17,16 @@ class AICCInlineCompletionProvider : InlineCompletionProvider {
             emit(InlineCompletionGrayTextElement(suggestion))
         }
     }
+
+    override val insertHandler: InlineCompletionInsertHandler
+        get() = object : InlineCompletionInsertHandler {
+            override fun afterInsertion(
+                environment: InlineCompletionInsertEnvironment,
+                elements: List<InlineCompletionElement>
+            ) {
+                AICCStatistic.onSuccess()
+            }
+        }
 
     override fun isEnabled(event: InlineCompletionEvent): Boolean {
         return event is InlineCompletionEvent.DocumentChange || event is InlineCompletionEvent.DirectCall
