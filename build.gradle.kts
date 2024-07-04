@@ -14,6 +14,8 @@ repositories {
 dependencies {
   implementation("io.github.amithkoujalgi:ollama4j:1.0.70")
   implementation("org.slf4j:slf4j-jdk14:2.1.0-alpha1")
+  testImplementation(kotlin("test"))
+  testImplementation(kotlin("test-junit"))
 }
 
 // Configure Gradle IntelliJ Plugin
