@@ -30,6 +30,15 @@ class AICCStatistic {
             .toDouble() / _totalCompletionsNumber.get().toDouble() * 100).toInt()
 
     /**
+     * The average time taken for a code completion.
+     * This is calculated as the total time taken for all completions divided by the total number of completions.
+     * The time is expressed in seconds.
+     */
+    val averageCompletionTime: Double
+        get() = if (_totalCompletionsNumber.get() == 0) 0.0 else _totalCompletionTimeInMillis.get()
+            .toDouble() / _totalCompletionsNumber.get().toDouble() / 1000.0
+
+    /**
      * This method is called when a code completion is attempted.
      * It increments the total number of completions and adds the completion time to the total completion time.
      *
