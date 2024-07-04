@@ -6,7 +6,7 @@ import java.util.concurrent.atomic.AtomicLong
 /**
  * This object is responsible for tracking statistics related to AI code completions.
  */
-class AICCStatistic {
+object AICCStatistic {
     /**
      * The total number of code completions attempted.
      * This includes both successful and unsuccessful completions.
