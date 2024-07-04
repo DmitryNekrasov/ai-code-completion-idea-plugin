@@ -22,6 +22,14 @@ class AICCStatistic {
         get() = _successfulCompletionsNumber.get()
 
     /**
+     * The user engagement rate with the AI code completions.
+     * This is calculated as the ratio of successful completions to total completions, expressed as a percentage.
+     */
+    val userEngagement: Int
+        get() = (if (_totalCompletionsNumber.get() == 0) 0.0 else _successfulCompletionsNumber.get()
+            .toDouble() / _totalCompletionsNumber.get().toDouble() * 100).toInt()
+
+    /**
      * This method is called when a code completion is attempted.
      * It increments the total number of completions and adds the completion time to the total completion time.
      *
