@@ -81,10 +81,22 @@ class AICCStatusBarWidget(project: Project) : EditorBasedWidget(project), Status
     var status: String = "waiting..."
 
     /**
-     * This method returns the text to be displayed on the widget.
-     * @return The text to be displayed on the widget.
+     * The number of cache miss events. A cache miss occurs when the requested data is not found in the cache.
      */
-    override fun getText() = "AICC Status: $status"
+    var cacheMissNumber: Int = 0
+
+    /**
+     * The number of cache hit events. A cache hit occurs when the requested data is found in the cache.
+     */
+    var cacheHitNumber: Int = 0
+
+    /**
+     * Generates the text to be displayed on the status bar widget.
+     * It includes the current status of the AICC plugin and the cache hit/miss counts.
+     *
+     * @return A string representation of the AICC status, cache misses, and cache hits.
+     */
+    override fun getText() = "| AICC Status: $status | Cache Miss: $cacheMissNumber | Cache Hit: $cacheHitNumber |"
 
     /**
      * This method returns the tooltip text of the widget.
@@ -101,20 +113,49 @@ class AICCStatusBarWidget(project: Project) : EditorBasedWidget(project), Status
 }
 
 /**
- * This object manages the AICCStatusBarWidget.
- * It provides a method to update the status displayed on the AICCStatusBarWidget.
+ * Manages updates to the AICC status bar widget, including status, cache miss, and cache hit numbers.
+ * This object provides a centralized way to update the widget's display information.
  */
 object AICCStatusBarWidgetManager {
     /**
-     * This method updates the status displayed on the AICCStatusBarWidget.
+     * Updates the status displayed on the AICC status bar widget.
      *
-     * @param status The new status to be displayed on the AICCStatusBarWidget.
+     * @param status The new status to be displayed.
      */
     fun updateStatus(status: String) {
+        update { this.status = status }
+    }
+
+    /**
+     * Updates the number of cache miss events to be displayed on the AICC status bar widget.
+     * A cache miss occurs when the requested data is not found in the cache.
+     *
+     * @param cacheMissNumber The new number of cache miss events.
+     */
+    fun updateCacheMissNumber(cacheMissNumber: Int) {
+        update { this.cacheMissNumber = cacheMissNumber }
+    }
+
+    /**
+     * Updates the number of cache hit events to be displayed on the AICC status bar widget.
+     * A cache hit occurs when the requested data is found in the cache.
+     *
+     * @param cacheHitNumber The new number of cache hit events.
+     */
+    fun updateCacheHitNumber(cacheHitNumber: Int) {
+        update { this.cacheHitNumber = cacheHitNumber }
+    }
+
+    /**
+     * Private helper function to apply updates to the AICCStatusBarWidget.
+     *
+     * @param updateField A lambda function that applies updates to the AICCStatusBarWidget.
+     */
+    private fun update(updateField: AICCStatusBarWidget.() -> Unit) {
         WindowManager.getInstance().getStatusBar(ProjectManager.getInstance().openProjects.first())?.also { statusBar ->
             statusBar.getWidget(AICCStatusBarWidget.ID)?.apply {
                 if (this is AICCStatusBarWidget) {
-                    this.status = status
+                    updateField()
                     statusBar.updateWidget(AICCStatusBarWidget.ID)
                 }
             }
