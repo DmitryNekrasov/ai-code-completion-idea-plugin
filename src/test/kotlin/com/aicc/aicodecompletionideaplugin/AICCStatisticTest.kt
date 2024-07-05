@@ -19,7 +19,7 @@ class AICCStatisticTest {
     }
 
     @Test
-    fun testOnCompletion() {
+    fun `test on completion`() {
         val n = 10
         for (i in 1..n) {
             AICCStatistic.onCompletion(1000)
@@ -28,7 +28,7 @@ class AICCStatisticTest {
     }
 
     @Test
-    fun testOnSuccess() {
+    fun `test on success`() {
         val n = 10
         for (i in 1..n) {
             AICCStatistic.onCompletion(1000)
@@ -41,7 +41,7 @@ class AICCStatisticTest {
     }
 
     @Test
-    fun userEngagement() {
+    fun `test user engagement`() {
         val n = 10
         for (i in 1..n) {
             AICCStatistic.onCompletion(1000)
@@ -54,7 +54,7 @@ class AICCStatisticTest {
     }
 
     @Test
-    fun averageCompletionTime() {
+    fun `test average completion time`() {
         val n = 10
         for (i in 1..n) {
             AICCStatistic.onCompletion(i * 1000L)
