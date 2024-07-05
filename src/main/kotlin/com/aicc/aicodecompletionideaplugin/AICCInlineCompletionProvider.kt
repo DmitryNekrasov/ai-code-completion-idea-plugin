@@ -6,6 +6,7 @@ import com.intellij.codeInsight.inline.completion.elements.InlineCompletionGrayT
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.launch
+import org.jetbrains.concurrency.runAsync
 
 class AICCInlineCompletionProvider : InlineCompletionProvider {
     override val id = InlineCompletionProviderID("AICCInlineCompletionProvider")
@@ -15,7 +16,25 @@ class AICCInlineCompletionProvider : InlineCompletionProvider {
         return InlineCompletionSuggestion.Default(
             channelFlow {
                 val (prefix, suffix) = request.document.text.splitUsingOffset(request.startOffset)
-                val suggestion = OllamaLLM.call(prefix, suffix) ?: ""
+                val lastPrefixLine = prefix.lines().last()
+                val suggestion = if (prefix in AICCCache) {
+                    AICCCacheStatistic.onCacheHit()
+                    AICCCache[prefix]
+                } else if (lastPrefixLine in AICCCache) {
+                    AICCCacheStatistic.onCacheHit()
+                    AICCCache[lastPrefixLine]
+                } else {
+                    AICCCacheStatistic.onCacheMiss()
+                    OllamaLLM.call(prefix, suffix)?.also {
+                        addCurrentToCache(prefix, it)
+                        addCurrentToCache(lastPrefixLine, it)
+                    }
+                } ?: ""
+                if (suggestion.isNotBlank()) {
+                    runAsync {
+                        addNextToCache(prefix, suffix, suggestion)
+                    }
+                }
                 launch {
                     try {
                         trySend(InlineCompletionGrayTextElement(suggestion))
@@ -25,7 +44,7 @@ class AICCInlineCompletionProvider : InlineCompletionProvider {
                 }
             }.onCompletion {
                 val endTime = System.nanoTime()
-                val duration = (endTime - startTime) / 1_000_000  // Convert to milliseconds
+                val duration = (endTime - startTime) / 1_000_000 // Convert to milliseconds
                 AICCStatistic.onCompletion(duration)
             }
         )
@@ -47,5 +66,22 @@ class AICCInlineCompletionProvider : InlineCompletionProvider {
 
     private fun String.splitUsingOffset(offset: Int): Pair<String, String> {
         return substring(0, offset + 1) to substring(offset + 1)
+    }
+
+    private fun addCurrentToCache(prefix: String, currentSuggestion: String) {
+        if (prefix.isNotBlank()) {
+            AICCCache[prefix] = currentSuggestion
+        }
+    }
+
+    private fun addNextToCache(prefix: String, suffix: String, currentSuggestion: String) {
+        val nextPrefix = prefix + currentSuggestion
+        if (nextPrefix !in AICCCache) {
+            OllamaLLM.call(nextPrefix, suffix)?.also {
+                if (it.isNotBlank()) {
+                    AICCCache[nextPrefix] = it
+                }
+            }
+        }
     }
 }

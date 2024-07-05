@@ -47,7 +47,7 @@ object AICCCache {
      */
     private val cache: LoadingCache<String, String> by lazy {
         CacheBuilder.newBuilder()
-            .maximumSize(100)
+            .maximumSize(1000)
             .expireAfterAccess(10, TimeUnit.MINUTES)
             .build(
                 object : CacheLoader<String, String>() {
@@ -64,7 +64,7 @@ object AICCCache {
      * @return A processed string suitable for use as a cache key.
      */
     private fun String.toKey(): String {
-        return replace("\n", "").replace("\\s+".toRegex(), " ").trimEnd().takeLast(64)
+        return replace("\n", "").replace("\\s+".toRegex(), " ").trimEnd().takeLast(200)
     }
 
     /**
