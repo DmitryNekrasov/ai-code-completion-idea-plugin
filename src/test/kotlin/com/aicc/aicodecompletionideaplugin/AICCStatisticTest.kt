@@ -11,7 +11,7 @@ class AICCStatisticTest {
     }
 
     @Test
-    fun testReset() {
+    fun `test reset`() {
         assertEquals(0, AICCStatistic.totalCompletionsNumber)
         assertEquals(0, AICCStatistic.successfulCompletionsNumber)
         assertEquals(0, AICCStatistic.userEngagement)
