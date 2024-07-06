@@ -5,7 +5,22 @@ import io.github.amithkoujalgi.ollama4j.core.utils.Options
 import io.github.amithkoujalgi.ollama4j.core.utils.OptionsBuilder
 import java.net.http.HttpTimeoutException
 
+/**
+ * Implementation of the LLM interface using the Ollama API for generating code completions.
+ * This object encapsulates the functionality to communicate with the Ollama API, handling
+ * network timeouts and retries, to fetch code completion suggestions based on the given prefix
+ * and suffix.
+ */
 object OllamaLLM : LLM {
+    /**
+     * Attempts to generate a code completion suggestion by querying the Ollama API.
+     * It constructs a request with a combination of prefix and suffix, handling retries
+     * in case of timeouts.
+     *
+     * @param prefix The part of the code before the cursor.
+     * @param suffix The part of the code after the cursor.
+     * @return The generated completion suggestion, or null if no suggestion could be generated.
+     */
     override fun call(prefix: String, suffix: String): String? {
         if (isEnable) {
             AICCStatusBarWidgetManager.updateStatus("OK")
@@ -29,12 +44,22 @@ object OllamaLLM : LLM {
         return null
     }
 
+    /**
+     * Lazily initialized options for the Ollama API call.
+     * These options include settings such as the temperature for the generation process.
+     */
     private val options: Options by lazy {
         OptionsBuilder()
             .setTemperature(0.4f)
             .build()
     }
 
+    /**
+     * Checks if the Ollama API is reachable and can be used for generating suggestions.
+     * This is determined by attempting to ping the Ollama API.
+     *
+     * @return True if the Ollama API is reachable, false otherwise.
+     */
     private val isEnable: Boolean
         get() {
             return try {
