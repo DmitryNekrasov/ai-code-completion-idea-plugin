@@ -24,6 +24,7 @@ class AICCStatisticTest {
         for (i in 1..n) {
             AICCStatistic.onCompletion(1000)
         }
+
         assertEquals(n, AICCStatistic.totalCompletionsNumber)
     }
 
@@ -36,6 +37,7 @@ class AICCStatisticTest {
                 AICCStatistic.onSuccess()
             }
         }
+
         assertEquals(n, AICCStatistic.totalCompletionsNumber)
         assertEquals(n / 2, AICCStatistic.successfulCompletionsNumber)
     }
@@ -49,6 +51,7 @@ class AICCStatisticTest {
                 AICCStatistic.onSuccess()
             }
         }
+
         assertEquals(n, AICCStatistic.totalCompletionsNumber)
         assertEquals(50, AICCStatistic.userEngagement)
     }
@@ -59,6 +62,7 @@ class AICCStatisticTest {
         for (i in 1..n) {
             AICCStatistic.onCompletion(i * 1000L)
         }
+
         assertEquals(n, AICCStatistic.totalCompletionsNumber)
         assertEquals((n + 1.0) / 2, AICCStatistic.averageCompletionTime)
     }
