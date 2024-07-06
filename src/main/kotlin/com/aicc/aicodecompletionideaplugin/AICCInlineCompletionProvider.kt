@@ -61,7 +61,9 @@ class AICCInlineCompletionProvider : InlineCompletionProvider {
         }
 
     override fun isEnabled(event: InlineCompletionEvent): Boolean {
-        return event is InlineCompletionEvent.DocumentChange || event is InlineCompletionEvent.DirectCall
+        return event is InlineCompletionEvent.DocumentChange && with(event.editor) {
+            !document.text.shouldBeSkippedOnPosition(caretModel.offset)
+        }
     }
 
     private fun String.splitUsingOffset(offset: Int): Pair<String, String> {
