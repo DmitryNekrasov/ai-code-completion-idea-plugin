@@ -1,6 +1,8 @@
 package com.aicc.aicodecompletionideaplugin
 
-import kotlin.test.*
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.BeforeTest
 
 class AICCStatisticAnalyzerTest {
     @BeforeTest
