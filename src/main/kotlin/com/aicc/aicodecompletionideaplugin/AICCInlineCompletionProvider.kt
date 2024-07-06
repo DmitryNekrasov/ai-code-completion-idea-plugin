@@ -17,7 +17,7 @@ class AICCInlineCompletionProvider : InlineCompletionProvider {
             channelFlow {
                 val (prefix, suffix) = request.document.text.splitUsingOffset(request.startOffset)
                 val lastPrefixLine = prefix.lines().last()
-                val suggestion = if (prefix in AICCCache) {
+                val suggestion = (if (prefix in AICCCache) {
                     AICCCacheStatistic.onCacheHit()
                     AICCCache[prefix]
                 } else if (lastPrefixLine in AICCCache) {
@@ -29,7 +29,7 @@ class AICCInlineCompletionProvider : InlineCompletionProvider {
                         addCurrentToCache(prefix, it)
                         addCurrentToCache(lastPrefixLine, it)
                     }
-                } ?: ""
+                } ?: "").let { AICCStatisticAnalyzer.makeSingleLineIfNeeded(it) }
                 if (suggestion.isNotBlank()) {
                     runAsync {
                         addNextToCache(prefix, suffix, suggestion)
