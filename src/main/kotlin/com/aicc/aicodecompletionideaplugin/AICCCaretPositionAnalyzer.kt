@@ -46,7 +46,6 @@ fun String.shouldBeSkippedOnPosition(offset: Int) = checkElementUnderCaret(this,
             || beforeLParenthesis()
             || afterRParenthesis()
             || insideIdentifier()
-
 }
 
 /**
