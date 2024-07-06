@@ -36,6 +36,20 @@ class AICCStatisticAnalyzerTest {
     }
 
     @Test
+    fun `makeSingleLineIfNeeded keeps multi-line suggestion when there is not semicolon at the end of line`() {
+        repeat(100) {
+            AICCStatistic.onCompletion(1000)
+            if (it % 4 == 0) {
+                AICCStatistic.onSuccess()
+            }
+        }
+
+        val multiLineSuggestion = "first line {\n\tsecond line\n}"
+        val result = AICCStatisticAnalyzer.makeSingleLineIfNeeded(multiLineSuggestion)
+        assertEquals(multiLineSuggestion, result)
+    }
+
+    @Test
     fun `makeSingleLineIfNeeded keeps single-line suggestion unchanged`() {
         repeat(100) {
             AICCStatistic.onCompletion(1000)
