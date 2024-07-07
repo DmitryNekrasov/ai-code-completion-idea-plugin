@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "com.aicc"
-version = "1.0"
+version = "1.1"
 
 repositories {
   mavenCentral()
@@ -51,5 +51,16 @@ tasks {
 
   publishPlugin {
     token.set(System.getenv("PUBLISH_TOKEN"))
+  }
+
+  jar {
+    manifest {
+      attributes["Implementation-Title"] = "AI Code Completion"
+      attributes["Implementation-Version"] = version
+    }
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    from({
+      configurations.runtimeClasspath.get().map { if (it.isDirectory) it else zipTree(it) }
+    })
   }
 }
