@@ -36,6 +36,13 @@
  * 9. If caret is at the boundary of a char literal:
  *     char c1 = 'a|';
  *     char c2 = '|a';
+ *
+ * 10. If caret is at the end of a digital literal:
+ *     int x = 123|;
+ *     long y = 123L|;
+ *     float z = 123.45f|;
+ *     int a = 123| + 456|;
+ *     int b = 123|*456|;
  */
 package com.aicc.aicodecompletionideaplugin
 
@@ -56,6 +63,7 @@ fun String.shouldBeSkippedOnPosition(offset: Int) = checkElementUnderCaret(this,
             || insideIdentifier()
             || atTheBoundaryOfStringLiteral()
             || atTheBoundaryOfCharLiteral()
+            || atTheEndOfDigitalLiteral()
 }
 
 /**
@@ -113,7 +121,7 @@ private fun Pair<Char, Char>.insideIdentifier(): Boolean {
 }
 
 /**
- * Determines if the caret is at the boundary of a string literal. This is identified by checking if either
+ * Checks if the caret is at the boundary of a string literal. This is identified by checking if either
  * character immediately before or after the caret is a double quote character (`"`).
  *
  * @return `true` if the caret is immediately before or after a double quote, indicating the boundary of a string literal; `false` otherwise.
@@ -123,13 +131,29 @@ private fun Pair<Char, Char>.atTheBoundaryOfStringLiteral(): Boolean {
 }
 
 /**
- * Determines if the caret is at the boundary of a char literal. This is identified by checking if either
+ * Checks if the caret is at the boundary of a char literal. This is identified by checking if either
  * character immediately before or after the caret is a single quote character (`'`).
  *
  * @return `true` if the caret is immediately before or after a single quote, indicating the boundary of a char literal; `false` otherwise.
  */
 private fun Pair<Char, Char>.atTheBoundaryOfCharLiteral(): Boolean {
     return first == '\'' || second == '\''
+}
+
+/**
+ * Checks if the caret is at the end of a digital literal. This method checks if the character immediately
+ * before the caret is a digit, 'L' (denoting a long literal), or 'f' (denoting a float literal), and the character
+ * immediately after the caret is not part of a digital literal (i.e., not a digit or a letter indicating a type),
+ * but could be a semicolon, space, or an arithmetic or logical operator.
+ *
+ * @return `true` if the caret is immediately after a digital literal and before a character that is not part of
+ * a digital literal; `false` otherwise.
+ */
+private fun Pair<Char, Char>.atTheEndOfDigitalLiteral(): Boolean {
+    fun Char.isArithmeticOperator() = this == '+' || this == '-' || this == '*' || this == '/'
+    fun Char.isLogicalOperator() = this == '&' || this == '|' || this == '!' || this == '=' || this == '<' || this == '>'
+    return (first.isDigit() || first == 'L' || first == 'f')
+            && (second == ';' || second == ' ' || second.isArithmeticOperator() || second.isLogicalOperator())
 }
 
 /**

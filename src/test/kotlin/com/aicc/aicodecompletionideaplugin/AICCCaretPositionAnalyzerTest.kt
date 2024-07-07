@@ -61,4 +61,20 @@ class AICCCaretPositionAnalyzerTest {
         assertTrue(str.shouldBeSkippedOnPosition(9))
         assertTrue(str.shouldBeSkippedOnPosition(10))
     }
+
+    @Test
+    fun `test at the end of digital literal`() {
+        val beforeSemicolon = "int x = 123;"
+        val afterLong = "long y = 123L;"
+        val afterFloat = "float z = 123.45f;"
+        val beforeSpace = "int a = 123 + 456;"
+        val beforeArithmetic = "int b = 123*456;"
+        val beforeLogical = "int c = 123<456;"
+        assertTrue(beforeSemicolon.shouldBeSkippedOnPosition(11))
+        assertTrue(afterLong.shouldBeSkippedOnPosition(12))
+        assertTrue(afterFloat.shouldBeSkippedOnPosition(16))
+        assertTrue(beforeSpace.shouldBeSkippedOnPosition(10))
+        assertTrue(beforeArithmetic.shouldBeSkippedOnPosition(10))
+        assertTrue(beforeLogical.shouldBeSkippedOnPosition(10))
+    }
 }
