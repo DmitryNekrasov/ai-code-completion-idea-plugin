@@ -56,3 +56,5 @@ codellama:7b-code	fc84f39375bc	3.8 GB	5 days ago
 </p>
 
 Follow this link to see a demo of the plugin: https://youtu.be/gaeU0-J7M0o
+
+To test the plugin I used code from this repository: https://github.com/DmitryNekrasov/math-misc
