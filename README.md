@@ -18,3 +18,32 @@ The plugin is designed to enhance the coding experience within an IDE by providi
 This plugin aims to streamline the coding process by reducing the need for manual code lookups and typing, thereby increasing developer productivity and code quality.
 
 For more information, you can review the documentation provided in the source code.
+
+### How to use
+
+1. Install local Ollama server. You need to go to the [Ollama website](https://ollama.com/), download and install Ollama for your operating system. An example of how to do this for Linux:
+```bash
+curl -fsSL https://ollama.com/install.sh | sh
+```
+2. Check that the Ollama server is available. To do this, follow the link -  [localhost:11434](http://localhost:11434/), you should see the following message in the browser:
+```
+Ollama is running
+```
+3. Pull `codellama:7b-code` model:
+```bash
+ollama pull codellama:7b-code
+```
+4. Check that the model has been successfully pulled. To do this, run the command:
+```bash
+ollama list
+```
+You should see output similar to the following:
+```
+NAME             	ID          	SIZE  	MODIFIED   
+codellama:7b-code	fc84f39375bc	3.8 GB	5 days ago
+```
+5. Download the latest version of the plugin from the Releases section.
+6. Open IntelliJ IDEA, Choose Settings -> Plugins -> Gear-Icon -> Install Plugin from Disk..., and select the downloaded plugin.
+   ![[settings_window.png]]
+   ![[choose_plugin_window.png]]
+7. Enjoy AI autocompletion!
