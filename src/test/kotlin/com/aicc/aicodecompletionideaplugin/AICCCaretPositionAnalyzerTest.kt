@@ -47,4 +47,11 @@ class AICCCaretPositionAnalyzerTest {
     fun `test outside any specific context`() {
         assertFalse("int x = 123;".shouldBeSkippedOnPosition(4))
     }
+
+    @Test
+    fun `test at the boundary of string literal`() {
+        val str = "String str = \"Hello!\""
+        assertTrue(str.shouldBeSkippedOnPosition(14))
+        assertTrue(str.shouldBeSkippedOnPosition(20))
+    }
 }

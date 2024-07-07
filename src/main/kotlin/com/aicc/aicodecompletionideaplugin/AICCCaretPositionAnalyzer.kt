@@ -28,6 +28,9 @@
  *
  * 7. If caret is after right parenthesis:
  *     static void myMethod()|
+ *
+ * 8. If caret is at the boundary of a string literal:
+ *     String str = "Hello, world!|";
  */
 package com.aicc.aicodecompletionideaplugin
 
@@ -46,6 +49,7 @@ fun String.shouldBeSkippedOnPosition(offset: Int) = checkElementUnderCaret(this,
             || beforeLParenthesis()
             || afterRParenthesis()
             || insideIdentifier()
+            || atTheBoundaryOfStringLiteral()
 }
 
 /**
@@ -100,6 +104,16 @@ private fun Pair<Char, Char>.afterRParenthesis(): Boolean {
  */
 private fun Pair<Char, Char>.insideIdentifier(): Boolean {
     return first.isLetterOrDigit() && second.isLetterOrDigit()
+}
+
+/**
+ * Determines if the caret is at the boundary of a string literal. This is identified by checking if either
+ * character immediately before or after the caret is a double quote character (`"`).
+ *
+ * @return `true` if the caret is immediately before or after a double quote, indicating the boundary of a string literal; `false` otherwise.
+ */
+private fun Pair<Char, Char>.atTheBoundaryOfStringLiteral(): Boolean {
+    return first == '"' || second == '"'
 }
 
 /**
