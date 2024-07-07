@@ -54,4 +54,11 @@ class AICCCaretPositionAnalyzerTest {
         assertTrue(str.shouldBeSkippedOnPosition(14))
         assertTrue(str.shouldBeSkippedOnPosition(20))
     }
+
+    @Test
+    fun `test at the boundary of char literal`() {
+        val str = "char c = 'a'"
+        assertTrue(str.shouldBeSkippedOnPosition(9))
+        assertTrue(str.shouldBeSkippedOnPosition(10))
+    }
 }

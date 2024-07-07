@@ -30,7 +30,12 @@
  *     static void myMethod()|
  *
  * 8. If caret is at the boundary of a string literal:
- *     String str = "Hello, world!|";
+ *     String str1 = "Hello, world!|";
+ *     String str2 = "|Hello, world!";
+ *
+ * 9. If caret is at the boundary of a char literal:
+ *     char c1 = 'a|';
+ *     char c2 = '|a';
  */
 package com.aicc.aicodecompletionideaplugin
 
@@ -50,6 +55,7 @@ fun String.shouldBeSkippedOnPosition(offset: Int) = checkElementUnderCaret(this,
             || afterRParenthesis()
             || insideIdentifier()
             || atTheBoundaryOfStringLiteral()
+            || atTheBoundaryOfCharLiteral()
 }
 
 /**
@@ -114,6 +120,16 @@ private fun Pair<Char, Char>.insideIdentifier(): Boolean {
  */
 private fun Pair<Char, Char>.atTheBoundaryOfStringLiteral(): Boolean {
     return first == '"' || second == '"'
+}
+
+/**
+ * Determines if the caret is at the boundary of a char literal. This is identified by checking if either
+ * character immediately before or after the caret is a single quote character (`'`).
+ *
+ * @return `true` if the caret is immediately before or after a single quote, indicating the boundary of a char literal; `false` otherwise.
+ */
+private fun Pair<Char, Char>.atTheBoundaryOfCharLiteral(): Boolean {
+    return first == '\'' || second == '\''
 }
 
 /**
