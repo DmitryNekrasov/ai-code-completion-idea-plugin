@@ -50,3 +50,7 @@ codellama:7b-code	fc84f39375bc	3.8 GB	5 days ago
   <img src="choose_plugin_window.png" alt="Choose Plugin"/>
 </p>
 7. Enjoy AI autocompletion!
+
+<p align="center">
+  <img src="hello_world.png" alt="Work of plugin"/>
+</p>
