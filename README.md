@@ -46,5 +46,7 @@ codellama:7b-code	fc84f39375bc	3.8 GB	5 days ago
 6. Open IntelliJ IDEA, Choose **Settings -> Plugins -> Gear-Icon -> Install Plugin from Disk...**, and select the downloaded plugin.
    
    ![settings_window](settings_window.png "Settings")
-   ![choose_plugin_window](choose_plugin_window.png "Choose Plugin")
+<p align="center">
+  <img src="choose_plugin_window.png" alt="Choose Plugin"/>
+</p>
 7. Enjoy AI autocompletion!
