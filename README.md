@@ -54,3 +54,5 @@ codellama:7b-code	fc84f39375bc	3.8 GB	5 days ago
 <p align="center">
   <img src="hello_world.png" alt="Work of plugin"/>
 </p>
+
+Follow this link to see a demo of the plugin: https://youtu.be/gaeU0-J7M0o
