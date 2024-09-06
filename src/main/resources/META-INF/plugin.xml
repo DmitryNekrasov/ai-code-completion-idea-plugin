@@ -24,6 +24,12 @@
   <extensions defaultExtensionNs="com.intellij">
     <inline.completion.provider implementation="com.aicc.aicodecompletionideaplugin.AICCInlineCompletionProvider"/>
     <statusBarWidgetFactory implementation="com.aicc.aicodecompletionideaplugin.AICCStatusBarWidgetFactory" id="AICCStatusBarWidgetFactory"/>
+    <applicationConfigurable
+            parentId="tools"
+            instance="com.aicc.aicodecompletionideaplugin.config.AICCConfig"
+            id="com.aicc.aicodecompletionideaplugin.config.AICCConfig"
+            displayName="AI code completion idea"/>
+    <applicationService serviceImplementation="com.aicc.aicodecompletionideaplugin.config.AICCState"/>
   </extensions>
   <actions>
     <action id="com.aicc.aicodecompletionideaplugin.AICCStatsPopupDialogAction"

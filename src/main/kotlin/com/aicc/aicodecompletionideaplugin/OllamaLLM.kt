@@ -12,6 +12,12 @@ import java.net.http.HttpTimeoutException
  * and suffix.
  */
 object OllamaLLM : LLM {
+
+    /**
+     * The model used for code generation in the Ollama API.
+     */
+    private var model = "codellama:7b-code"
+
     /**
      * Attempts to generate a code completion suggestion by querying the Ollama API.
      * It constructs a request with a combination of prefix and suffix, handling retries
@@ -28,7 +34,7 @@ object OllamaLLM : LLM {
                 val suggestion = try {
                     OllamaAPI(HOST).apply {
                         setRequestTimeoutSeconds(4)
-                    }.generate(MODEL, "<PRE> $prefix <SUF>$suffix <MID>", options).response.let {
+                    }.generate(model, "<PRE> $prefix <SUF>$suffix <MID>", options).response.let {
                         if (it.endsWith(END)) it.substring(0, it.length - END.length).trim(' ', '\t', '\n') else it
                     }
                 } catch (e: HttpTimeoutException) {
@@ -42,6 +48,15 @@ object OllamaLLM : LLM {
             AICCStatusBarWidgetManager.updateStatus("Ollama server is not reachable")
         }
         return null
+    }
+
+    /**
+     * Changes the model used by the LLM.
+     * It will also clear the cache
+     */
+    override fun changeModel(model: String) {
+        this.model = model
+        AICCCache.clear()
     }
 
     /**
@@ -73,11 +88,6 @@ object OllamaLLM : LLM {
      * The host URL for the Ollama API.
      */
     private const val HOST = "http://localhost:11434/"
-
-    /**
-     * The model used for code generation in the Ollama API.
-     */
-    private const val MODEL = "codellama:7b-code"
 
     /**
      * The end of text marker used in the responses from the Ollama API.

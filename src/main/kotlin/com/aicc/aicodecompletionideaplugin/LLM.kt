@@ -13,4 +13,11 @@ interface LLM {
      * @return The generated completion suggestion, or null if no suggestion could be generated.
      */
     fun call(prefix: String, suffix: String): String?
+
+    /**
+     * This method changes the current model used by the LLM.
+     *
+     * @param model The name of the model to be used.
+     */
+    fun changeModel(model: String)
 }
