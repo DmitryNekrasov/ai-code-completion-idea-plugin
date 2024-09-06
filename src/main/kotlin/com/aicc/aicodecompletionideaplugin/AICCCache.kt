@@ -11,6 +11,14 @@ import java.util.concurrent.TimeUnit
  * tailored for the caching of code completion suggestions.
  */
 object AICCCache {
+
+    /**
+     * Clears all entries from the cache.
+     */
+    fun clear() {
+        cache.invalidateAll()
+    }
+
     /**
      * Checks if the cache contains a value for the specified key.
      *
