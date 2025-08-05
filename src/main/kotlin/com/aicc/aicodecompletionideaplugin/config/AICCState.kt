@@ -14,7 +14,7 @@ import com.intellij.util.xmlb.XmlSerializerUtil
 class AICCState : PersistentStateComponent<AICCState> {
 
     @JvmField
-    var model: String = "codellama:7b-code"
+    var model: String = "JetBrains/Mellum-4b-sft-all:latest"
 
     override fun getState(): AICCState = this
 

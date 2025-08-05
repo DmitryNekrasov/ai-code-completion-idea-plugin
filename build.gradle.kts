@@ -1,7 +1,7 @@
 plugins {
   id("java")
-  id("org.jetbrains.kotlin.jvm") version "1.9.24"
-  id("org.jetbrains.intellij") version "1.17.3"
+  id("org.jetbrains.kotlin.jvm") version "1.9.25"
+  id("org.jetbrains.intellij") version "1.17.4"
 }
 
 group = "com.aicc"
@@ -12,7 +12,7 @@ repositories {
 }
 
 dependencies {
-  implementation("io.github.amithkoujalgi:ollama4j:1.0.70")
+  implementation("io.github.ollama4j:ollama4j:1.0.100")
   implementation("org.slf4j:slf4j-jdk14:2.1.0-alpha1")
   implementation("com.google.guava:guava:31.0.1-jre")
   testImplementation(kotlin("test"))
@@ -22,7 +22,7 @@ dependencies {
 // Configure Gradle IntelliJ Plugin
 // Read more: https://plugins.jetbrains.com/docs/intellij/tools-gradle-intellij-plugin.html
 intellij {
-  version.set("2023.3.6")
+  version.set("2024.2")
   type.set("IC") // Target IDE Platform
 
   plugins.set(listOf(/* Plugin Dependencies */))
@@ -40,7 +40,7 @@ tasks {
 
   patchPluginXml {
     sinceBuild.set("233")
-    untilBuild.set("242.*")
+    untilBuild.set("251.*")
   }
 
   signPlugin {

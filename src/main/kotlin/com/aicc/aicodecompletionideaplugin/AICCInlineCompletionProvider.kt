@@ -3,6 +3,7 @@ package com.aicc.aicodecompletionideaplugin
 import com.intellij.codeInsight.inline.completion.*
 import com.intellij.codeInsight.inline.completion.elements.InlineCompletionElement
 import com.intellij.codeInsight.inline.completion.elements.InlineCompletionGrayTextElement
+import com.intellij.codeInsight.inline.completion.suggestion.InlineCompletionSingleSuggestion
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.launch
@@ -35,10 +36,11 @@ class AICCInlineCompletionProvider : InlineCompletionProvider {
      * @param request The current inline completion request.
      * @return An inline completion suggestion.
      */
-    override suspend fun getSuggestion(request: InlineCompletionRequest): InlineCompletionSuggestion {
+    override suspend fun getSuggestion(request: InlineCompletionRequest): InlineCompletionSingleSuggestion {
         val startTime = System.nanoTime()
         return InlineCompletionSuggestion.Default(
             channelFlow {
+                // TODO use request.file.name for filename
                 val (prefix, suffix) = request.document.text.splitUsingOffset(request.startOffset)
                 val lastPrefixLine = prefix.lines().last()
                 val suggestion = (if (prefix in AICCCache) {

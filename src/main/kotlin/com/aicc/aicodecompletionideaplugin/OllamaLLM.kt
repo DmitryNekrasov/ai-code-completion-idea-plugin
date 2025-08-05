@@ -1,8 +1,8 @@
 package com.aicc.aicodecompletionideaplugin
 
-import io.github.amithkoujalgi.ollama4j.core.OllamaAPI
-import io.github.amithkoujalgi.ollama4j.core.utils.Options
-import io.github.amithkoujalgi.ollama4j.core.utils.OptionsBuilder
+import io.github.ollama4j.OllamaAPI
+import io.github.ollama4j.utils.Options
+import io.github.ollama4j.utils.OptionsBuilder
 import java.net.http.HttpTimeoutException
 
 /**
@@ -16,7 +16,7 @@ object OllamaLLM : LLM {
     /**
      * The model used for code generation in the Ollama API.
      */
-    private var model = "codellama:7b-code"
+    private var model = "JetBrains/Mellum-4b-sft-all:latest"
 
     /**
      * Attempts to generate a code completion suggestion by querying the Ollama API.
@@ -33,14 +33,19 @@ object OllamaLLM : LLM {
             for (i in 0..<RETRY_COUNT) {
                 val suggestion = try {
                     OllamaAPI(HOST).apply {
-                        setRequestTimeoutSeconds(4)
-                    }.generate(model, "<PRE> $prefix <SUF>$suffix <MID>", options).response.let {
+                        setRequestTimeoutSeconds(60)
+                        // TODO feed the filename
+                        // TODO eot Mellum
+                    }.generate(model, "<filename>TODO.kt<fim_suffix>$suffix<fim_prefix>$prefix<fim_middle>", true, options).response.let {
                         if (it.endsWith(END)) it.substring(0, it.length - END.length).trim(' ', '\t', '\n') else it
                     }
                 } catch (e: HttpTimeoutException) {
+                    println("Ollama API timeout after $i attempts")
+                    println(e)
                     continue
                 }
                 if (suggestion.isNotBlank()) {
+                    println("suggestion$suggestion")
                     return suggestion
                 }
             }
@@ -65,7 +70,7 @@ object OllamaLLM : LLM {
      */
     private val options: Options by lazy {
         OptionsBuilder()
-            .setTemperature(0.4f)
+            .setTemperature(0.0f) // do not be creative when completing
             .build()
     }
 
@@ -87,12 +92,13 @@ object OllamaLLM : LLM {
     /**
      * The host URL for the Ollama API.
      */
-    private const val HOST = "http://localhost:11434/"
+//    private const val HOST = "http://localhost:11434/"
+    private const val HOST = "http://10.0.29.96:11435"
 
     /**
      * The end of text marker used in the responses from the Ollama API.
      */
-    private const val END = "<EOT>"
+    private const val END = "<|endoftext|>"
 
     /**
      * The number of attempts to retry the API call in case of a timeout.

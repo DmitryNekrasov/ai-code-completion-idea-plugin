@@ -29,9 +29,9 @@ curl -fsSL https://ollama.com/install.sh | sh
 ```
 Ollama is running
 ```
-3. Pull `codellama:7b-code` model:
+3. Pull `JetBrains/Mellum-4b-sft-all:latest` model:
 ```bash
-ollama pull codellama:7b-code
+ollama pull JetBrains/Mellum-4b-sft-all:latest
 ```
 4. Check that the model has been successfully pulled. To do this, run the command:
 ```bash
@@ -40,7 +40,7 @@ ollama list
 You should see output similar to the following:
 ```
 NAME             	ID          	SIZE  	MODIFIED   
-codellama:7b-code	fc84f39375bc	3.8 GB	5 days ago
+JetBrains/Mellum-4b-sft-all:latest	fc84f39375bc	4.3 GB	5 days ago
 ```
 5. Download the latest version of the plugin from the Releases section.
 6. Open IntelliJ IDEA, Choose **Settings -> Plugins -> Gear-Icon -> Install Plugin from Disk...**, and select the downloaded plugin.
