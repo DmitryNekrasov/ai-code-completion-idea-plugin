@@ -1,66 +1,67 @@
 plugins {
-  id("java")
-  id("org.jetbrains.kotlin.jvm") version "1.9.24"
-  id("org.jetbrains.intellij") version "1.17.3"
+    kotlin("jvm") version "2.3.0"
+    id("java")
+    id("org.jetbrains.intellij.platform")
 }
 
 group = "com.aicc"
 version = "1.1"
 
 repositories {
-  mavenCentral()
+    mavenCentral()
+    intellijPlatform {
+        defaultRepositories()
+    }
 }
 
 dependencies {
-  implementation("io.github.amithkoujalgi:ollama4j:1.0.70")
-  implementation("org.slf4j:slf4j-jdk14:2.1.0-alpha1")
-  implementation("com.google.guava:guava:31.0.1-jre")
-  testImplementation(kotlin("test"))
-  testImplementation(kotlin("test-junit"))
+    implementation("io.github.amithkoujalgi:ollama4j:1.0.70")
+    implementation("org.slf4j:slf4j-jdk14:2.1.0-alpha1")
+    implementation("com.google.guava:guava:33.5.0-jre")
+    testImplementation(kotlin("test"))
+    testImplementation(kotlin("test-junit"))
+
+    intellijPlatform {
+        intellijIdeaCommunity("2023.3.6")
+    }
 }
 
-// Configure Gradle IntelliJ Plugin
-// Read more: https://plugins.jetbrains.com/docs/intellij/tools-gradle-intellij-plugin.html
-intellij {
-  version.set("2023.3.6")
-  type.set("IC") // Target IDE Platform
+intellijPlatform {
+    pluginConfiguration {
+        ideaVersion {
+            sinceBuild = "233"
+            untilBuild = "242.*"
+        }
+    }
 
-  plugins.set(listOf(/* Plugin Dependencies */))
+    signing {
+        certificateChain = providers.environmentVariable("CERTIFICATE_CHAIN")
+        privateKey = providers.environmentVariable("PRIVATE_KEY")
+        password = providers.environmentVariable("PRIVATE_KEY_PASSWORD")
+    }
+
+    publishing {
+        token = providers.environmentVariable("PUBLISH_TOKEN")
+    }
 }
 
 tasks {
-  // Set the JVM compatibility versions
-  withType<JavaCompile> {
-    sourceCompatibility = "17"
-    targetCompatibility = "17"
-  }
-  withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
-    kotlinOptions.jvmTarget = "17"
-  }
-
-  patchPluginXml {
-    sinceBuild.set("233")
-    untilBuild.set("242.*")
-  }
-
-  signPlugin {
-    certificateChain.set(System.getenv("CERTIFICATE_CHAIN"))
-    privateKey.set(System.getenv("PRIVATE_KEY"))
-    password.set(System.getenv("PRIVATE_KEY_PASSWORD"))
-  }
-
-  publishPlugin {
-    token.set(System.getenv("PUBLISH_TOKEN"))
-  }
-
-  jar {
-    manifest {
-      attributes["Implementation-Title"] = "AI Code Completion"
-      attributes["Implementation-Version"] = version
+    withType<JavaCompile> {
+        sourceCompatibility = "17"
+        targetCompatibility = "17"
     }
-    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-    from({
-      configurations.runtimeClasspath.get().map { if (it.isDirectory) it else zipTree(it) }
-    })
-  }
+    withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
+        kotlinOptions.jvmTarget = "17"
+    }
+
+    jar {
+        manifest {
+            attributes["Implementation-Title"] = "AI Code Completion"
+            attributes["Implementation-Version"] = version
+        }
+        duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+        from({
+            configurations.runtimeClasspath.get().map { if (it.isDirectory) it else zipTree(it) }
+        })
+    }
 }
