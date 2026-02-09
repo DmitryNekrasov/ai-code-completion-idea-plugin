@@ -33,11 +33,11 @@ object OllamaLLM : LLM {
             for (i in 0..<RETRY_COUNT) {
                 val suggestion = try {
                     OllamaAPI(HOST).apply {
-                        setRequestTimeoutSeconds(4)
+                        setRequestTimeoutSeconds(5)
                     }.generate(model, "<PRE> $prefix <SUF>$suffix <MID>", options).response.let {
                         if (it.endsWith(END)) it.substring(0, it.length - END.length).trim(' ', '\t', '\n') else it
                     }
-                } catch (e: HttpTimeoutException) {
+                } catch (_: HttpTimeoutException) {
                     continue
                 }
                 if (suggestion.isNotBlank()) {
