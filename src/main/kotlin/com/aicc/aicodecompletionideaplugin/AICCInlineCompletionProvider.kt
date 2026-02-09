@@ -3,8 +3,8 @@ package com.aicc.aicodecompletionideaplugin
 import com.intellij.codeInsight.inline.completion.*
 import com.intellij.codeInsight.inline.completion.elements.InlineCompletionElement
 import com.intellij.codeInsight.inline.completion.elements.InlineCompletionGrayTextElement
-import com.intellij.codeInsight.inline.completion.suggestion.InlineCompletionSingleSuggestion
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.withContext
 import org.jetbrains.concurrency.runAsync
 
@@ -37,41 +37,40 @@ class AICCInlineCompletionProvider : InlineCompletionProvider {
      */
     override suspend fun getSuggestion(request: InlineCompletionRequest): InlineCompletionSuggestion {
         val startTime = System.nanoTime()
-        try {
-            val (prefix, suffix) = request.document.text.splitUsingOffset(request.startOffset)
-            val lastPrefixLine = prefix.lines().last()
-            val suggestion = withContext(Dispatchers.IO) {
-                (if (prefix in AICCCache) {
-                    AICCCacheStatistic.onCacheHit()
-                    AICCCache[prefix]
-                } else if (lastPrefixLine in AICCCache) {
-                    AICCCacheStatistic.onCacheHit()
-                    AICCCache[lastPrefixLine]
-                } else {
-                    AICCCacheStatistic.onCacheMiss()
-                    OllamaLLM.call(prefix, suffix)?.also {
-                        addCurrentToCache(prefix, it)
-                        addCurrentToCache(lastPrefixLine, it)
+        return InlineCompletionSuggestion.Default(
+            channelFlow {
+                val (prefix, suffix) = request.document.text.splitUsingOffset(request.startOffset)
+                val lastPrefixLine = prefix.lines().last()
+                val suggestion = withContext(Dispatchers.IO) {
+                    (if (prefix in AICCCache) {
+                        AICCCacheStatistic.onCacheHit()
+                        AICCCache[prefix]
+                    } else if (lastPrefixLine in AICCCache) {
+                        AICCCacheStatistic.onCacheHit()
+                        AICCCache[lastPrefixLine]
+                    } else {
+                        AICCCacheStatistic.onCacheMiss()
+                        OllamaLLM.call(prefix, suffix)?.also {
+                            addCurrentToCache(prefix, it)
+                            addCurrentToCache(lastPrefixLine, it)
+                        }
+                    } ?: "").let { AICCStatisticAnalyzer.makeSingleLineIfNeeded(it) }
+                }
+                if (suggestion.isNotBlank()) {
+                    runAsync {
+                        addNextToCache(prefix, suffix, suggestion)
                     }
-                } ?: "").let { AICCStatisticAnalyzer.makeSingleLineIfNeeded(it) }
+                    trySend(InlineCompletionGrayTextElement(suggestion))
+                }
+            }.let { flow ->
+                kotlinx.coroutines.flow.flow {
+                    flow.collect { emit(it) }
+                    val endTime = System.nanoTime()
+                    val duration = (endTime - startTime) / 1_000_000
+                    AICCStatistic.onCompletion(duration)
+                }
             }
-
-            if (suggestion.isBlank()) {
-                return InlineCompletionSuggestion.Empty
-            }
-
-            runAsync {
-                addNextToCache(prefix, suffix, suggestion)
-            }
-
-            return InlineCompletionSingleSuggestion.build {
-                emit(InlineCompletionGrayTextElement(suggestion))
-            }
-        } finally {
-            val endTime = System.nanoTime()
-            val duration = (endTime - startTime) / 1_000_000
-            AICCStatistic.onCompletion(duration)
-        }
+        )
     }
 
     /**
