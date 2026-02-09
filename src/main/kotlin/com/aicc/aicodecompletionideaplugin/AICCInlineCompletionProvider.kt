@@ -5,6 +5,7 @@ import com.intellij.codeInsight.inline.completion.elements.InlineCompletionEleme
 import com.intellij.codeInsight.inline.completion.elements.InlineCompletionGrayTextElement
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.channelFlow
+import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.withContext
 import org.jetbrains.concurrency.runAsync
 
@@ -67,15 +68,12 @@ class AICCInlineCompletionProvider : InlineCompletionProvider {
                     runAsync {
                         addNextToCache(prefix, suffix, suggestion)
                     }
-                    trySend(InlineCompletionGrayTextElement(suggestion))
+                    send(InlineCompletionGrayTextElement(suggestion))
                 }
-            }.let { flow ->
-                kotlinx.coroutines.flow.flow {
-                    flow.collect { emit(it) }
-                    val endTime = System.nanoTime()
-                    val duration = (endTime - startTime) / 1_000_000
-                    AICCStatistic.onCompletion(duration)
-                }
+            }.onCompletion {
+                val endTime = System.nanoTime()
+                val duration = (endTime - startTime) / 1_000_000
+                AICCStatistic.onCompletion(duration)
             }
         )
     }
