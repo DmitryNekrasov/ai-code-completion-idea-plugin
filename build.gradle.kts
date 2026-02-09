@@ -24,15 +24,15 @@ dependencies {
     testImplementation(kotlin("test-junit"))
 
     intellijPlatform {
-        intellijIdeaCommunity("2023.3.6")
+        intellijIdeaCommunity("2025.1.1")
     }
 }
 
 intellijPlatform {
     pluginConfiguration {
         ideaVersion {
-            sinceBuild = "233"
-            untilBuild = "242.*"
+            sinceBuild = "251"
+            untilBuild = "253.*"
         }
     }
 
