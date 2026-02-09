@@ -42,19 +42,26 @@ class AICCInlineCompletionProvider : InlineCompletionProvider {
                 val (prefix, suffix) = request.document.text.splitUsingOffset(request.startOffset)
                 val lastPrefixLine = prefix.lines().last()
                 val suggestion = withContext(Dispatchers.IO) {
-                    (if (prefix in AICCCache) {
-                        AICCCacheStatistic.onCacheHit()
-                        AICCCache[prefix]
-                    } else if (lastPrefixLine in AICCCache) {
-                        AICCCacheStatistic.onCacheHit()
-                        AICCCache[lastPrefixLine]
-                    } else {
-                        AICCCacheStatistic.onCacheMiss()
-                        OllamaLLM.call(prefix, suffix)?.also {
-                            addCurrentToCache(prefix, it)
-                            addCurrentToCache(lastPrefixLine, it)
+                    val text = when {
+                        prefix in AICCCache -> {
+                            AICCCacheStatistic.onCacheHit()
+                            AICCCache[prefix]
                         }
-                    } ?: "").let { AICCStatisticAnalyzer.makeSingleLineIfNeeded(it) }
+
+                        lastPrefixLine in AICCCache -> {
+                            AICCCacheStatistic.onCacheHit()
+                            AICCCache[lastPrefixLine]
+                        }
+
+                        else -> {
+                            AICCCacheStatistic.onCacheMiss()
+                            OllamaLLM.call(prefix, suffix)?.also {
+                                addCurrentToCache(prefix, it)
+                                addCurrentToCache(lastPrefixLine, it)
+                            }
+                        }
+                    } ?: ""
+                    AICCStatisticAnalyzer.makeSingleLineIfNeeded(text)
                 }
                 if (suggestion.isNotBlank()) {
                     runAsync {
